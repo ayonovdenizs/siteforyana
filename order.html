@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Оформление — Взял-сделал</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo"><span class="logo__mark">В</span> ВЗЯЛ-СДЕЛАЛ</a>
+    <nav class="nav">
+      <a href="index.html">Главная</a>
+      <a href="catalog.html">Каталог</a>
+      <a href="order.html" class="active">Заказ</a>
+      <a href="index.html#contacts">Контакты</a>
+    </nav>
+    <div class="header__actions">
+      <a href="tel:+79136510276" class="btn btn--ghost btn--sm">+7 913 651-02-76</a>
+      <a href="catalog.html" class="btn btn--ghost btn--sm">+ Добавить</a>
+      <button class="burger"><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <a href="index.html">Главная</a>
+  <a href="catalog.html">Каталог</a>
+  <a href="order.html">Корзина</a>
+  <a href="index.html#contacts">Контакты</a>
+  <a href="tel:+79136510276">📞 +7 913 651-02-76</a>
+</div>
+
+<section class="section">
+  <div class="container">
+    <h2 style="font-size:clamp(28px,4vw,40px);letter-spacing:-.03em;line-height:.95">Оформление заказа</h2>
+    <p style="color:#9BA3B3;margin-top:8px">Без крупного залога • Верификация 30 сек • Доставка 1-2 часа</p>
+
+    <div class="order-layout" style="margin-top:28px">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="form-card">
+          <h3>🛒 Корзина <span id="cart-count" class="badge" style="margin-left:8px">0</span></h3>
+          <div id="cart-list" class="order-items"></div>
+          <div id="cart-empty" class="empty" style="display:none"><b>Корзина пуста</b><p>Добавьте инструменты из каталога — они появятся здесь</p><a href="catalog.html" class="btn btn--primary btn--sm" style="margin-top:12px">Перейти в каталог</a></div>
+        </div>
+
+        <div class="form-card">
+          <h3>📍 Доставка и верификация — Тобольск</h3>
+          <p style="font-size:12px;color:#9BA3B3;margin-bottom:12px">Пункт выдачи: Тюменская обл., г. Тобольск, Октябрьская ул., 39. Доставка по городу 1–2 часа.</p>
+          <div class="field"><label>Адрес доставки / объекта *</label><input id="addr" placeholder="Тобольск, Октябрьская 39 или ваш адрес"><div class="field__err">Укажите адрес</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="field"><label>Дата начала *</label><input id="date" type="date"></div>
+            <div class="field"><label>Телефон *</label><input id="phone" placeholder="+7 900 000-00-00"></div>
+          </div>
+          <div class="field"><label>Способ верификации (без залога)</label>
+            <select id="verify"><option>Госуслуги (30 сек, без фото)</option><option>Паспорт + селфи</option><option>Водительское удостоверение</option></select>
+          </div>
+          <div class="field"><label>Комментарий курьеру</label><textarea id="comment" rows="2" placeholder="Домофон, этаж, время, что именно делать..."></textarea></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            <span class="badge badge--green">✓ Без залога до 15 000 ₽</span>
+            <span class="badge">✓ Страховка включена</span>
+            <span class="badge">✓ Видеоинструкция</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="form-card">
+          <h3>Итог</h3>
+          <div id="summary-lines"></div>
+          <div class="summary__row"><span>Доставка туда-обратно</span><b style="color:#7DFF68">0 ₽</b></div>
+          <div class="summary__row"><span>Страховка и ТО</span><b>включено</b></div>
+          <div class="summary__total"><span>К оплате</span><b class="mono" id="total-price">0 ₽</b></div>
+          <div style="margin-top:12px;padding:12px;border-radius:12px;background:rgba(125,255,104,.08);border:1px solid rgba(125,255,104,.18);font-size:12px;color:#9BA3B3;line-height:1.5">
+            Экономия vs покупки: <b id="save-total" style="color:#7DFF68" class="mono">0 ₽</b><br>
+            Не нужно хранить инструмент дома и платить за ТО.
+          </div>
+          <button class="btn btn--primary btn--lg" style="width:100%;margin-top:16px" id="submit">Оформить за 2 минуты →</button>
+          <p style="font-size:11px;color:#6B7588;margin-top:10px;text-align:center">Нажимая, вы соглашаетесь с условиями аренды и обработкой данных. Верификация — 30 сек.</p>
+          <div style="margin-top:14px;display:flex;gap:8px;justify-content:center"><span class="badge">🔒 Шифрование</span><span class="badge">🛡️ Страховка</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="success-modal">
+  <div class="modal__box">
+    <div class="modal__icon">✓</div>
+    <h3 style="font-size:24px;letter-spacing:-.02em">Заказ принят!</h3>
+    <p style="color:#9BA3B3;margin-top:8px;line-height:1.6">Мы уже собираем инструменты, делаем ТО и назначаем курьера. Доставка сегодня за 1–2 часа. Видеоинструкции придут в SMS.</p>
+    <div style="margin-top:16px;padding:12px;border-radius:12px;background:var(--bg2);border:1px solid var(--border);text-align:left;font-size:13px">
+      <div style="display:flex;justify-content:space-between"><span style="color:#9BA3B3">Номер заказа</span><b class="mono">#VS-2026-0841</b></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span style="color:#9BA3B3">Курьер</span><b>назначим за 10 мин</b></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span style="color:#9BA3B3">Поддержка</span><b><a href="tel:+79136510276">+7 913 651-02-76</a></b></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span style="color:#9BA3B3">Email</span><b>janula23mama@gmail.com</b></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span style="color:#9BA3B3">Адрес</span><b>Тобольск, Октябрьская 39</b></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <a href="catalog.html" class="btn btn--ghost" style="flex:1">В каталог</a>
+      <a href="index.html" class="btn btn--primary" style="flex:1">На главную</a>
+    </div>
+  </div>
+</div>
+
+<footer class="footer"><div class="container"><div class="footer__grid"><div><div class="logo"><span class="logo__mark">В</span> ВЗЯЛ-СДЕЛАЛ</div><p style="margin-top:8px;color:#9BA3B3;font-size:12px">Тобольск, прокат инструмента FORTE. Октябрьская 39.</p></div><div><h5>Контакты</h5><a href="tel:+79136510276">+7 913 651-02-76</a><a href="mailto:janula23mama@gmail.com">janula23mama@gmail.com</a><a>Тобольск, Октябрьская 39</a></div></div><div class="footer__bottom"><span>© 2026 Взял-сделал, Тобольск</span><span>Демо-заказ — свяжемся по телефону</span></div></div></footer>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+const listEl=document.getElementById('cart-list'), emptyEl=document.getElementById('cart-empty'), countBadge=document.getElementById('cart-count'), summaryEl=document.getElementById('summary-lines'), totalEl=document.getElementById('total-price'), saveEl=document.getElementById('save-total');
+
+function calcItemPrice(tool, days){
+  if(days===1) return tool.priceDay;
+  if(days<=3) return Math.round(tool.price3/3*days);
+  if(days<=7) return Math.round(tool.priceWeek/7*days);
+  return Math.round(tool.priceMonth/30*days);
+}
+
+function renderCart(){
+  const cart=getCart();
+  countBadge.textContent=cart.length+' '+ (cart.length===1?'позиция':cart.length<5?'позиции':'позиций');
+  if(!cart.length){
+    listEl.innerHTML=''; emptyEl.style.display='block'; summaryEl.innerHTML='<div class="summary__row"><span>Корзина пуста</span><b>—</b></div>'; totalEl.textContent='0 ₽'; saveEl.textContent='0 ₽'; return;
+  }
+  emptyEl.style.display='none';
+  let total=0, save=0;
+  listEl.innerHTML=cart.map((c,idx)=>{
+    const tool=getTool(c.id); if(!tool) return '';
+    const price=calcItemPrice(tool,c.days);
+    total+=price*(c.qty||1);
+    save+=(tool.buyPrice-price)*(c.qty||1);
+    return `<div class="order-item">
+      <div class="order-item__img">${tool.icon}</div>
+      <div style="flex:1"><b style="font-size:14px">${tool.name}</b><div style="font-size:12px;color:#9BA3B3">${c.days} ${(c.days===1?'день':c.days<5?'дня':'дней')} • ${tool.brand} • <span class="mono">${price.toLocaleString('ru-RU')} ₽</span></div></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn btn--ghost btn--sm" onclick="changeDays(${idx},-1)">−</button>
+        <span class="mono" style="font-size:13px;min-width:28px;text-align:center">${c.days}</span>
+        <button class="btn btn--ghost btn--sm" onclick="changeDays(${idx},1)">+</button>
+        <button class="btn btn--ghost btn--sm" onclick="removeItem(${idx})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  summaryEl.innerHTML=cart.map(c=>{
+    const tool=getTool(c.id); const price=calcItemPrice(tool,c.days);
+    return `<div class="summary__row"><span>${tool.name} × ${c.days}д</span><b class="mono">${(price*(c.qty||1)).toLocaleString('ru-RU')} ₽</b></div>`;
+  }).join('');
+
+  totalEl.textContent=total.toLocaleString('ru-RU')+' ₽';
+  saveEl.textContent=save.toLocaleString('ru-RU')+' ₽';
+}
+
+function changeDays(idx,delta){
+  let cart=getCart(); if(!cart[idx]) return;
+  cart[idx].days=Math.min(30,Math.max(1,(cart[idx].days||1)+delta));
+  setCart(cart); renderCart();
+}
+function removeItem(idx){
+  let cart=getCart(); cart.splice(idx,1); setCart(cart); renderCart();
+}
+
+document.getElementById('date').valueAsDate=new Date();
+renderCart();
+
+document.getElementById('submit').addEventListener('click',()=>{
+  const cart=getCart();
+  let valid=true;
+  const addr=document.getElementById('addr'), phone=document.getElementById('phone');
+  const addrField=addr.closest('.field'), phoneField=phone.closest('.field');
+  addrField.classList.remove('field--error'); phoneField.classList.remove('field--error');
+  if(!addr.value.trim()){ addrField.classList.add('field--error'); valid=false; }
+  if(!phone.value.trim() || phone.value.trim().length<10){ phoneField.classList.add('field--error'); valid=false; }
+  if(!cart.length){ toast('Добавьте хотя бы 1 инструмент'); valid=false; }
+  if(!valid) return;
+
+  document.getElementById('success-modal').classList.add('open');
+  localStorage.removeItem('vs_cart');
+  updateCartCount();
+});
+document.getElementById('success-modal').addEventListener('click',e=>{
+  if(e.target.id==='success-modal') e.target.classList.remove('open');
+});
+</script>
+</body>
+</html>
