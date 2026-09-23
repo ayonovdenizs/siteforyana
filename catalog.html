@@ -51,8 +51,8 @@
         <div class="filter__group">
           <div class="filter__label">Цена за сутки</div>
           <div class="range">
-            <input type="range" id="price-range" min="300" max="1500" value="1500" step="50">
-            <div style="display:flex;justify-content:space-between;font-size:12px;color:#9BA3B3"><span>300 ₽</span><span id="price-val" class="mono" style="color:#F2F3F5">до 1500 ₽</span></div>
+            <input type="range" id="price-range" min="300" max="1600" value="1600" step="50">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:#9BA3B3"><span>300 ₽</span><span id="price-val" class="mono" style="color:#F2F3F5">до 1600 ₽</span></div>
           </div>
         </div>
         <div class="filter__group">
@@ -151,10 +151,16 @@ function render(){
 
 [q,priceRange,onlyStock,onlyPopular,sortSel].forEach(el=>el.addEventListener('input',render));
 $('#reset').addEventListener('click',()=>{
-  q.value=''; activeCat='Все'; priceRange.value=1500; onlyStock.checked=true; onlyPopular.checked=false; sortSel.value='popular';
+  q.value=''; activeCat='Все'; priceRange.value=1600; onlyStock.checked=true; onlyPopular.checked=false; sortSel.value='popular';
   renderCatChips(); render();
 });
-render();
+try{
+  if(typeof TOOLS==='undefined') throw new Error('TOOLS not loaded');
+  render();
+}catch(e){
+  console.error(e);
+  grid.innerHTML=`<div class="empty"><b>Ошибка загрузки каталога</b><p>${e.message}. Обновите страницу.</p></div>`;
+}
 </script>
 </body>
 </html>
