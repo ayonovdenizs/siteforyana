@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Инструмент — Взял-сделал</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="header">
+  <div class="container header__inner">
+    <a href="index.html" class="logo"><span class="logo__mark">В</span> ВЗЯЛ-СДЕЛАЛ</a>
+    <nav class="nav">
+      <a href="index.html">Главная</a>
+      <a href="catalog.html" class="active">Каталог</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+    <div class="header__actions">
+      <a href="order.html" class="cart-btn">🛒<span data-cart-count style="display:none">0</span></a>
+      <button class="burger"><span></span></button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu">
+  <a href="index.html">Главная</a>
+  <a href="catalog.html">Каталог</a>
+  <a href="order.html">Корзина</a>
+</div>
+
+<section class="section">
+  <div class="container">
+    <a href="catalog.html" class="badge" style="margin-bottom:18px">← Назад в каталог</a>
+    <div class="tool-layout" id="tool-root">
+      <!-- injected -->
+    </div>
+
+    <div style="margin-top:48px">
+      <h3 style="font-size:22px;margin-bottom:16px">Похожие инструменты</h3>
+      <div class="tools" id="related"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container"><div class="footer__bottom"><span>© 2026 Взял-сделал</span><span>Видеоинструкция к каждому инструменту</span></div></div></footer>
+
+<script src="js/data.js"></script>
+<script src="js/common.js"></script>
+<script>
+function qs(name){ return new URLSearchParams(location.search).get(name); }
+const id = qs('id') || TOOLS[0].id;
+const tool = getTool(id) || TOOLS[0];
+document.title = tool.name + ' — Взял-сделал';
+
+const root = document.getElementById('tool-root');
+let activeTariff = 'day';
+const tariffs = [
+  {k:'day', label:'1 сутки', price:tool.priceDay, hint:'Для 1 задачи'},
+  {k:'3days', label:'3 дня', price:tool.price3, hint:'-15% выгода'},
+  {k:'week', label:'Неделя', price:tool.priceWeek, hint:'-30% выгода'},
+  {k:'month', label:'Месяц', price:tool.priceMonth, hint:'Для бизнеса'},
+];
+
+function renderTool(){
+  const saving = tool.buyPrice - tool.priceDay;
+  const pct = Math.round((1 - tool.priceDay/tool.buyPrice)*100);
+  root.innerHTML = `
+    <div class="tool-gallery"><b>${tool.icon}</b>
+      <div style="position:absolute;bottom:12px;left:12px;display:flex;gap:6px">
+        <span class="badge badge--green">Без залога</span>
+        <span class="badge badge--accent">ТО ✓</span>
+        <span class="badge">Страховка</span>
+      </div>
+    </div>
+    <div class="tool-info">
+      <div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><span class="badge">${tool.cat}</span><span class="badge">${tool.brand}</span>${tool.popular?'<span class="badge badge--accent">Хит продаж</span>':''}</div>
+      <h1>${tool.name}</h1>
+      <p style="margin-top:12px;color:#9BA3B3;line-height:1.6">${tool.desc} Исправный, чистый, готов к работе. Курьер покажет как включать.</p></div>
+
+      <div class="specs">
+        ${Object.entries(tool.specs).map(([k,v])=>`<div class="spec"><small>${k}</small><b>${v}</b></div>`).join('')}
+        <div class="spec"><small>Состояние</small><b>После ТО • Дезинфекция</b></div>
+        <div class="spec"><small>Доставка</small><b>1–2 часа по Москве</b></div>
+      </div>
+
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b>Тариф</b><span class="badge badge--green">Без залога до 15к</span></div>
+        <div class="tariffs">
+          ${tariffs.map(t=>`<div class="tariff ${activeTariff===t.k?'active':''}" data-k="${t.k}"><div><b>${t.label}</b><div style="font-size:12px;color:#9BA3B3">${t.hint}</div></div><div style="text-align:right"><div class="tariff__price mono">${t.price.toLocaleString('ru-RU')} ₽</div><div style="font-size:11px;color:#9BA3B3">${(t.price/(t.k==='day'?1:t.k==='3days'?3:t.k==='week'?7:30)).toFixed(0)} ₽/сут</div></div></div>`).join('')}
+        </div>
+      </div>
+
+      <div class="calc">
+        <div style="display:flex;justify-content:space-between;align-items:center"><b>Калькулятор</b><span class="badge">Экономия ${pct}%</span></div>
+        <label style="display:block;margin-top:12px;font-size:12px;color:#9BA3B3">Срок аренды: <span id="days-val" class="mono" style="color:#F2F3F5">1 день</span></label>
+        <input type="range" id="days" min="1" max="30" value="1">
+        <div class="calc__row"><span>Аренда</span><b class="mono" id="calc-rent">590 ₽</b></div>
+        <div class="calc__row"><span>Купить такой же</span><s class="mono">${tool.buyPrice.toLocaleString('ru-RU')} ₽</s></div>
+        <div class="calc__row total"><span>Ваша экономия</span><b class="mono" style="color:#7DFF68" id="calc-save">15 400 ₽</b></div>
+        <button class="btn btn--primary btn--lg" style="width:100%;margin-top:14px" id="add-btn">Добавить в корзину — <span id="add-price" class="mono">${tool.priceDay} ₽</span></button>
+        <div style="display:flex;gap:8px;margin-top:10px"><span class="badge">🎥 Видеоинструкция</span><span class="badge">💬 Поддержка 24/7</span></div>
+      </div>
+    </div>
+  `;
+
+  // bind tariffs
+  root.querySelectorAll('.tariff').forEach(el=>{
+    el.addEventListener('click',()=>{
+      activeTariff=el.dataset.k;
+      root.querySelectorAll('.tariff').forEach(x=>x.classList.remove('active'));
+      el.classList.add('active');
+      const map={day:1,'3days':3,week:7,month:30};
+      document.getElementById('days').value=map[activeTariff];
+      updateCalc();
+    });
+  });
+  const daysInput=root.querySelector('#days');
+  daysInput.addEventListener('input',updateCalc);
+  root.querySelector('#add-btn').addEventListener('click',()=>{
+    const d=+daysInput.value;
+    addToCart(tool.id, d);
+  });
+  updateCalc();
+}
+
+function updateCalc(){
+  const daysEl=document.getElementById('days');
+  if(!daysEl) return;
+  const days=+daysEl.value;
+  document.getElementById('days-val').textContent=days+' '+(days===1?'день':days<5?'дня':'дней');
+  // pricing logic: if 1 -> day, 2-3 -> proportional from 3days, 4-7 week, else month proportional
+  let pricePerDay=tool.priceDay;
+  let total;
+  if(days===1) total=tool.priceDay;
+  else if(days<=3) total=Math.round(tool.price3/3*days);
+  else if(days<=7) total=Math.round(tool.priceWeek/7*days);
+  else total=Math.round(tool.priceMonth/30*days);
+
+  document.getElementById('calc-rent').textContent=total.toLocaleString('ru-RU')+' ₽';
+  document.getElementById('calc-save').textContent=(tool.buyPrice - Math.min(total, tool.buyPrice)).toLocaleString('ru-RU')+' ₽';
+  document.getElementById('add-price').textContent=total.toLocaleString('ru-RU')+' ₽';
+  document.getElementById('add-btn').dataset.total=total;
+  document.getElementById('add-btn').dataset.days=days;
+}
+
+renderTool();
+
+// related
+const relatedEl=document.getElementById('related');
+const related = TOOLS.filter(t=>t.cat===tool.cat && t.id!==tool.id).slice(0,3);
+relatedEl.innerHTML=related.map(t=>`
+  <a href="tool.html?id=${t.id}" class="tool-card">
+    <div class="tool-card__img"><b>${t.icon}</b></div>
+    <div class="tool-card__body">
+      <div class="tool-card__meta"><span>${t.cat}</span><dot></dot><span>${t.brand}</span></div>
+      <div class="tool-card__title">${t.name}</div>
+      <div class="tool-card__foot"><div class="price"><b class="mono">${t.priceDay} ₽ / сут</b></div><span class="btn btn--ghost btn--sm">→</span></div>
+    </div>
+  </a>
+`).join('');
+</script>
+</body>
+</html>
